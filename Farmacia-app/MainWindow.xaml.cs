@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -9,14 +8,20 @@ namespace Farmacia_app
 {
     public partial class MainWindow : Window
     {
-        private readonly List<Medicament> _medicamente = new();
         private int _nextId = 1;
         private string _currentSearch = string.Empty;
 
         public MainWindow()
         {
             InitializeComponent();
+            AppState.DataChanged += RefreshGrid;
             RefreshGrid();
+        }
+
+        private void OnOpenClient(object sender, RoutedEventArgs e)
+        {
+            var clientWindow = new ClientWindow();
+            clientWindow.Show();
         }
 
         private void OnAdd(object sender, RoutedEventArgs e)
@@ -26,7 +31,7 @@ namespace Farmacia_app
                 return;
             }
 
-            _medicamente.Add(new Medicament
+            AppState.Medicamente.Add(new Medicament
             {
                 Id = _nextId++,
                 Nume = name,
@@ -34,7 +39,7 @@ namespace Farmacia_app
                 Stoc = stock
             });
 
-            RefreshGrid();
+            AppState.NotifyChanged();
             ClearInputs();
         }
 
@@ -56,7 +61,7 @@ namespace Farmacia_app
             selected.Pret = price;
             selected.Stoc = stock;
 
-            RefreshGrid();
+            AppState.NotifyChanged();
             ClearInputs();
         }
 
@@ -69,8 +74,8 @@ namespace Farmacia_app
                 return;
             }
 
-            _medicamente.Remove(selected);
-            RefreshGrid();
+            AppState.Medicamente.Remove(selected);
+            AppState.NotifyChanged();
             ClearInputs();
         }
 
@@ -107,7 +112,7 @@ namespace Farmacia_app
 
         private void RefreshGrid()
         {
-            IEnumerable<Medicament> data = _medicamente;
+            var data = AppState.Medicamente.AsEnumerable();
             if (!string.IsNullOrWhiteSpace(_currentSearch))
             {
                 data = data.Where(m => m.Nume.Contains(_currentSearch, StringComparison.OrdinalIgnoreCase));
@@ -118,7 +123,7 @@ namespace Farmacia_app
             UpdateStockSummary(list);
         }
 
-        private void UpdateStockSummary(List<Medicament> list)
+        private void UpdateStockSummary(System.Collections.Generic.List<Medicament> list)
         {
             var totalItems = list.Count;
             var totalStock = list.Sum(m => m.Stoc);

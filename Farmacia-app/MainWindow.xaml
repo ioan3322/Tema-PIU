@@ -34,10 +34,19 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0,0,0,10">
-                <TextBlock Text="Gestiune medicamente" FontSize="20" FontWeight="Bold" />
-                <TextBlock x:Name="StockSummaryText" Margin="20,5,0,0" Foreground="#475569" />
-            </StackPanel>
+            <Grid Grid.Row="0" Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <TextBlock Text="Gestiune medicamente" FontSize="20" FontWeight="Bold" />
+                    <TextBlock x:Name="StockSummaryText" Margin="20,5,0,0" Foreground="#475569" />
+                </StackPanel>
+
+                <Button Grid.Column="1" Style="{StaticResource SecondaryButtonStyle}" Content="Client" Click="OnOpenClient" />
+            </Grid>
 
             <Border Grid.Row="1" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,12">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
